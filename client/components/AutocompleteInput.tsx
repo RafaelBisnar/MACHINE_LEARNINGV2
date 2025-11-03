@@ -1,55 +1,45 @@
 import { useState, useRef, useEffect } from "react";
 import { Search, Send } from "lucide-react";
+import { CharacterListResponse } from "@shared/api";
 
 interface AutocompleteInputProps {
   onSubmit: (guess: string) => void;
   disabled?: boolean;
 }
 
-const CHARACTER_SUGGESTIONS = [
-  "Gandalf",
-  "Frodo Baggins",
-  "Aragorn",
-  "Legolas",
-  "Gimli",
-  "Boromir",
-  "Samwise Gamgee",
-  "Elrond",
-  "Galadriel",
-  "Saruman",
-  "Sauron",
-  "Harry Potter",
-  "Hermione Granger",
-  "Ron Weasley",
-  "Dumbledore",
-  "Voldemort",
-  "Snape",
-  "Luke Skywalker",
-  "Darth Vader",
-  "Yoda",
-  "Leia Organa",
-  "Han Solo",
-  "Katniss Everdeen",
-  "Haymitch Abernathy",
-  "Snow",
-  "Jon Snow",
-  "Daenerys Targaryen",
-  "Tyrion Lannister",
-  "Arya Stark",
-  "Tyrion",
-  "Sansa Stark",
-];
-
 export default function AutocompleteInput({
   onSubmit,
   disabled = false,
 }: AutocompleteInputProps) {
   const [input, setInput] = useState("");
+  const [allCharacters, setAllCharacters] = useState<string[]>([]);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
+
+  // Fetch character list on mount
+  useEffect(() => {
+    const fetchCharacters = async () => {
+      try {
+        const response = await fetch("/api/characters");
+        if (response.ok) {
+          const data: CharacterListResponse = await response.json();
+          // Flatten character names and aliases
+          const names = data.characters.flatMap((char) => [
+            char.name,
+            ...char.aliases,
+          ]);
+          setAllCharacters(names);
+        }
+      } catch (error) {
+        console.error("Error fetching characters:", error);
+      }
+    };
+    
+    fetchCharacters();
+  }, []);
 
   useEffect(() => {
     if (input.trim() === "") {
@@ -58,14 +48,14 @@ export default function AutocompleteInput({
       return;
     }
 
-    const filtered = CHARACTER_SUGGESTIONS.filter((char) =>
+    const filtered = allCharacters.filter((char) =>
       char.toLowerCase().includes(input.toLowerCase())
     );
 
     setSuggestions(filtered);
     setShowSuggestions(filtered.length > 0);
     setSelectedIndex(-1);
-  }, [input]);
+  }, [input, allCharacters]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

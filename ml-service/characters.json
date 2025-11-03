@@ -1,0 +1,387 @@
+[
+  {
+    "id": "iron-man",
+    "name": "Iron Man",
+    "quote": "I am Iron Man.",
+    "source": "Iron Man",
+    "universe": "Marvel",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.pexels.com/photos/35860/forge-craft-hot-form.jpg",
+    "aliases": [
+      "Tony Stark",
+      "Stark",
+      "Tony"
+    ]
+  },
+  {
+    "id": "spider-man",
+    "name": "Spider-Man",
+    "quote": "With great power comes great responsibility.",
+    "source": "Spider-Man",
+    "universe": "Marvel",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.pexels.com/photos/378570/pexels-photo-378570.jpeg?_gl=1*mgkx14*_ga*MTcyOTM0NTA5MC4xNzYyMTU4MTM3*_ga_8JE65Q40S6*czE3NjIxNTgxMzckbzEkZzEkdDE3NjIxNTgyNjEkajI2JGwwJGgw",
+    "aliases": [
+      "Peter Parker",
+      "Spidey",
+      "Web-Slinger",
+      "Peter",
+      "Parker"
+    ]
+  },
+  {
+    "id": "captain-america",
+    "name": "Captain America",
+    "quote": "I can do this all day.",
+    "source": "Captain America: The First Avenger",
+    "universe": "Marvel",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.pexels.com/photos/973049/pexels-photo-973049.jpeg?_gl=1*1edr23w*_ga*MTcyOTM0NTA5MC4xNzYyMTU4MTM3*_ga_8JE65Q40S6*czE3NjIxNTgxMzckbzEkZzEkdDE3NjIxNTgxNDUkajUyJGwwJGgw",
+    "aliases": [
+      "Steve Rogers",
+      "Cap",
+      "The First Avenger",
+      "Steve",
+      "Rogers"
+    ]
+  },
+  {
+    "id": "thor",
+    "name": "Thor",
+    "quote": "I am Thor, son of Odin!",
+    "source": "Thor",
+    "universe": "Marvel",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.pexels.com/photos/40721/egg-hammer-threaten-violence-40721.jpeg",
+    "aliases": [
+      "Thor Odinson",
+      "God of Thunder",
+      "Odinson"
+    ]
+  },
+  {
+    "id": "hulk",
+    "name": "Hulk",
+    "quote": "That",
+    "source": "The Avengers",
+    "universe": "Marvel",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.pexels.com/photos/2338015/pexels-photo-2338015.jpeg",
+    "aliases": [
+      "Bruce Banner",
+      "The Incredible Hulk",
+      "Green Goliath",
+      "Bruce",
+      "Banner"
+    ]
+  },
+  {
+    "id": "black-widow",
+    "name": "Black Widow",
+    "quote": "I",
+    "source": "The Avengers",
+    "universe": "Marvel",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.pexels.com/photos/16326004/pexels-photo-16326004.jpeg",
+    "aliases": [
+      "Natasha Romanoff",
+      "Natasha",
+      "Romanoff"
+    ]
+  },
+  {
+    "id": "doctor-strange",
+    "name": "Doctor Strange",
+    "quote": "We",
+    "source": "Doctor Strange",
+    "universe": "Marvel",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.pexels.com/photos/263337/pexels-photo-263337.jpeg",
+    "aliases": [
+      "Stephen Strange",
+      "Sorcerer Supreme",
+      "Stephen",
+      "Strange"
+    ]
+  },
+  {
+    "id": "black-panther",
+    "name": "Black Panther",
+    "quote": "Wakanda forever!",
+    "source": "Black Panther",
+    "universe": "Marvel",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.pexels.com/photos/260024/pexels-photo-260024.jpeg",
+    "aliases": [
+      "T",
+      ", ",
+      ", "
+    ]
+  },
+  {
+    "id": "thanos",
+    "name": "Thanos",
+    "quote": "I am inevitable.",
+    "source": "Avengers: Infinity War",
+    "universe": "Marvel",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.pexels.com/photos/1147946/pexels-photo-1147946.jpeg",
+    "aliases": [
+      "The Mad Titan",
+      "Mad Titan"
+    ]
+  },
+  {
+    "id": "loki",
+    "name": "Loki",
+    "quote": "I am burdened with glorious purpose.",
+    "source": "The Avengers",
+    "universe": "Marvel",
+    "genre": "Superhero Action",
+    "imageUrl": "https://cdn.britannica.com/65/166665-050-50B725A9/binding-Fenrir.jpg",
+    "aliases": [
+      "God of Mischief",
+      "Loki Laufeyson",
+      "Laufeyson"
+    ]
+  },
+  {
+    "id": "scarlet-witch",
+    "name": "Scarlet Witch",
+    "quote": "You took everything from me.",
+    "source": "WandaVision",
+    "universe": "Marvel",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.pexels.com/photos/9665491/pexels-photo-9665491.jpeg",
+    "aliases": [
+      "Wanda Maximoff",
+      "Wanda"
+    ]
+  },
+  {
+    "id": "vision",
+    "name": "Vision",
+    "quote": "A thing isn",
+    "source": "Avengers: Age of Ultron",
+    "universe": "Marvel",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.pexels.com/photos/20419740/pexels-photo-20419740.jpeg",
+    "aliases": [
+      "The Vision"
+    ]
+  },
+  {
+    "id": "ant-man",
+    "name": "Ant-Man",
+    "quote": "I do some dumb things, and the people I love the most pay the price.",
+    "source": "Ant-Man",
+    "universe": "Marvel",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.pexels.com/photos/1104974/pexels-photo-1104974.jpeg",
+    "aliases": [
+      "Scott Lang",
+      "Scott"
+    ]
+  },
+  {
+    "id": "batman",
+    "name": "Batman",
+    "quote": "I",
+    "source": "Batman Begins",
+    "universe": "DC",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.pexels.com/photos/257970/pexels-photo-257970.jpeg",
+    "aliases": [
+      "Bruce Wayne",
+      "The Dark Knight",
+      "Caped Crusader",
+      "Bruce",
+      "Wayne"
+    ]
+  },
+  {
+    "id": "superman",
+    "name": "Superman",
+    "quote": "I",
+    "source": "Superman",
+    "universe": "DC",
+    "genre": "Superhero Action",
+    "imageUrl": "https://media.istockphoto.com/id/886851320/photo/kryptonite-crystal.jpg?s=2048x2048&w=is&k=20&c=ZY4ky_H7f5QHFurOJE3xaFbmcImiNDCh4qP8NS7Jrzw=",
+    "aliases": [
+      "Clark Kent",
+      "Kal-El",
+      "Man of Steel",
+      "Clark",
+      "Kent"
+    ]
+  },
+  {
+    "id": "wonder-woman",
+    "name": "Wonder Woman",
+    "quote": "I will fight for those who cannot fight for themselves.",
+    "source": "Wonder Woman",
+    "universe": "DC",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=500&h=500&fit=crop",
+    "aliases": [
+      "Diana Prince",
+      "Amazon Princess",
+      "Diana"
+    ]
+  },
+  {
+    "id": "flash",
+    "name": "The Flash",
+    "quote": "Life is locomotion. If you",
+    "source": "The Flash",
+    "universe": "DC",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.pexels.com/photos/371838/pexels-photo-371838.jpeg",
+    "aliases": [
+      "Barry Allen",
+      "Fastest Man Alive",
+      "Barry",
+      "Allen",
+      "Flash"
+    ]
+  },
+  {
+    "id": "aquaman",
+    "name": "Aquaman",
+    "quote": "My father was a lighthouse keeper. My mother was a queen.",
+    "source": "Aquaman",
+    "universe": "DC",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=500&h=500&fit=crop",
+    "aliases": [
+      "Arthur Curry",
+      "King of Atlantis",
+      "Arthur"
+    ]
+  },
+  {
+    "id": "cyborg",
+    "name": "Cyborg",
+    "quote": "I",
+    "source": "Justice League",
+    "universe": "DC",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.unsplash.com/photo-1535378620166-273708d44e4c?w=500&h=500&fit=crop",
+    "aliases": [
+      "Victor Stone",
+      "Victor"
+    ]
+  },
+  {
+    "id": "joker",
+    "name": "The Joker",
+    "quote": "Why so serious?",
+    "source": "The Dark Knight",
+    "universe": "DC",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.unsplash.com/photo-1551269901-5c5e14c25df7?w=500&h=500&fit=crop",
+    "aliases": [
+      "Jack Napier",
+      "Joker"
+    ]
+  },
+  {
+    "id": "harley-quinn",
+    "name": "Harley Quinn",
+    "quote": "We",
+    "source": "Suicide Squad",
+    "universe": "DC",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.unsplash.com/photo-1571216776960-faa251eea1f7?w=500&h=500&fit=crop",
+    "aliases": [
+      "Harleen Quinzel",
+      "Dr. Quinzel",
+      "Harley",
+      "Harleen"
+    ]
+  },
+  {
+    "id": "green-lantern",
+    "name": "Green Lantern",
+    "quote": "In brightest day, in blackest night, no evil shall escape my sight.",
+    "source": "Green Lantern",
+    "universe": "DC",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.unsplash.com/photo-1513436539083-9d2127e742f1?w=500&h=500&fit=crop",
+    "aliases": [
+      "Hal Jordan",
+      "Emerald Knight",
+      "Hal",
+      "Jordan"
+    ]
+  },
+  {
+    "id": "shazam",
+    "name": "Shazam",
+    "quote": "Say my name!",
+    "source": "Shazam!",
+    "universe": "DC",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.unsplash.com/photo-1599232995246-58f1a02e8a1d?w=500&h=500&fit=crop",
+    "aliases": [
+      "Billy Batson",
+      "Captain Marvel",
+      "Billy"
+    ]
+  },
+  {
+    "id": "deadpool",
+    "name": "Deadpool",
+    "quote": "Maximum effort!",
+    "source": "Deadpool",
+    "universe": "Marvel",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.unsplash.com/photo-1533158326339-7f3cf2404354?w=500&h=500&fit=crop",
+    "aliases": [
+      "Wade Wilson",
+      "Merc with a Mouth",
+      "Wade",
+      "Wilson"
+    ]
+  },
+  {
+    "id": "wolverine",
+    "name": "Wolverine",
+    "quote": "I",
+    "source": "X-Men",
+    "universe": "Marvel",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.unsplash.com/photo-1585411241865-c234229c37b7?w=500&h=500&fit=crop",
+    "aliases": [
+      "Logan",
+      "James Howlett",
+      "Weapon X"
+    ]
+  },
+  {
+    "id": "storm",
+    "name": "Storm",
+    "quote": "Do you know what happens to a toad when it",
+    "source": "X-Men",
+    "universe": "Marvel",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=500&h=500&fit=crop",
+    "aliases": [
+      "Ororo Munroe",
+      "Ororo"
+    ]
+  },
+  {
+    "id": "cyclops",
+    "name": "Cyclops",
+    "quote": "To me, my X-Men!",
+    "source": "X-Men",
+    "universe": "Marvel",
+    "genre": "Superhero Action",
+    "imageUrl": "https://images.unsplash.com/photo-1614200187524-dc4b892acf16?w=500&h=500&fit=crop",
+    "aliases": [
+      "Scott Summers",
+      "Scott"
+    ]
+  }
+]
