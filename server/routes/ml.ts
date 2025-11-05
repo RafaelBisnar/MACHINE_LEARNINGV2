@@ -184,3 +184,103 @@ export const handleMLFeatureImportance: RequestHandler = async (_req, res) => {
     });
   }
 };
+
+// ===== NAIVE BAYES ENDPOINTS =====
+
+export const handleMLPredictGenre: RequestHandler = async (req, res) => {
+  try {
+    const { text, top_k } = req.body;
+    
+    const mlResponse = await fetch('http://localhost:5000/predict-genre', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, top_k })
+    });
+    
+    if (!mlResponse.ok) {
+      throw new Error(`ML service returned ${mlResponse.status}`);
+    }
+    
+    const data = await mlResponse.json();
+    res.json(data);
+    
+  } catch (error) {
+    console.error("ML genre prediction error:", error);
+    res.status(503).json({ 
+      success: false,
+      error: 'ML service unavailable' 
+    });
+  }
+};
+
+export const handleMLPredictUniverse: RequestHandler = async (req, res) => {
+  try {
+    const { text, top_k } = req.body;
+    
+    const mlResponse = await fetch('http://localhost:5000/predict-universe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, top_k })
+    });
+    
+    if (!mlResponse.ok) {
+      throw new Error(`ML service returned ${mlResponse.status}`);
+    }
+    
+    const data = await mlResponse.json();
+    res.json(data);
+    
+  } catch (error) {
+    console.error("ML universe prediction error:", error);
+    res.status(503).json({ 
+      success: false,
+      error: 'ML service unavailable' 
+    });
+  }
+};
+
+export const handleMLClassifyCharacter: RequestHandler = async (req, res) => {
+  try {
+    const characterData = req.body;
+    
+    const mlResponse = await fetch('http://localhost:5000/classify-character', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(characterData)
+    });
+    
+    if (!mlResponse.ok) {
+      throw new Error(`ML service returned ${mlResponse.status}`);
+    }
+    
+    const data = await mlResponse.json();
+    res.json(data);
+    
+  } catch (error) {
+    console.error("ML character classification error:", error);
+    res.status(503).json({ 
+      success: false,
+      error: 'ML service unavailable' 
+    });
+  }
+};
+
+export const handleMLNBInfo: RequestHandler = async (_req, res) => {
+  try {
+    const mlResponse = await fetch('http://localhost:5000/nb-info');
+    
+    if (!mlResponse.ok) {
+      throw new Error(`ML service returned ${mlResponse.status}`);
+    }
+    
+    const data = await mlResponse.json();
+    res.json(data);
+    
+  } catch (error) {
+    console.error("ML Naive Bayes info error:", error);
+    res.status(503).json({ 
+      success: false,
+      error: 'ML service unavailable' 
+    });
+  }
+};

@@ -1,14 +1,18 @@
 """
-Flask API server for K-NN Character Prediction and Linear Regression
+Flask API server for Machine Learning Models:
+- K-NN Character Prediction
+- Linear Regression Difficulty Analysis
+- Naive Bayes Genre/Universe Classification
 
 Provides REST API endpoints that the Express server can call
-to get ML-powered character predictions and difficulty analysis.
+to get ML-powered character predictions and analysis.
 """
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from knn_model import CharacterKNN
 from linear_regression_model import CharacterDifficultyPredictor
+from naive_bayes_model import CharacterNaiveBayes
 import json
 import os
 
@@ -18,6 +22,7 @@ CORS(app)  # Enable CORS for Express server
 # Initialize global models
 knn_model = None
 lr_model = None
+nb_model = None
 
 
 def load_characters_from_typescript():
@@ -91,9 +96,13 @@ def health_check():
             'linear_regression': {
                 'loaded': lr_model is not None,
                 'trained': lr_model is not None and lr_model.is_trained
+            },
+            'naive_bayes': {
+                'loaded': nb_model is not None,
+                'trained': nb_model is not None and nb_model.is_trained
             }
         },
-        'service': 'ML Character Prediction (K-NN + Linear Regression)'
+        'service': 'ML Character Analysis (K-NN + Linear Regression + Naive Bayes)'
     })
 
 
@@ -405,6 +414,205 @@ def get_feature_importance():
         }), 500
 
 
+# ===== NAIVE BAYES ENDPOINTS =====
+
+@app.route('/train-nb', methods=['POST'])
+def train_naive_bayes():
+    """
+    Train the Naive Bayes classifier for genre and universe prediction
+    """
+    global nb_model
+    
+    try:
+        # Get training data
+        data = request.get_json() or {}
+        characters = data.get('characters') or load_characters_from_typescript()
+        
+        # Create and train model
+        nb_model = CharacterNaiveBayes()
+        metrics = nb_model.train(characters)
+        
+        # Save model
+        nb_model.save_model('naive_bayes_model.pkl')
+        
+        return jsonify({
+            'success': True,
+            'message': 'Naive Bayes model trained successfully',
+            'metrics': metrics
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/predict-genre', methods=['POST'])
+def predict_genre():
+    """
+    Predict genre based on character text (quote, description, etc.)
+    
+    Body:
+        {
+            "text": "Character quote or description",
+            "top_k": 3  // optional, default 3
+        }
+    """
+    global nb_model
+    
+    if nb_model is None or not nb_model.is_trained:
+        return jsonify({
+            'success': False,
+            'error': 'Naive Bayes model not trained. Call /train-nb first.'
+        }), 400
+    
+    try:
+        data = request.get_json()
+        text = data.get('text')
+        top_k = data.get('top_k', 3)
+        
+        if not text:
+            return jsonify({
+                'success': False,
+                'error': 'Text is required'
+            }), 400
+        
+        # Predict genre
+        predictions = nb_model.predict_genre(text, top_k)
+        
+        return jsonify({
+            'success': True,
+            'predictions': predictions,
+            'input_text': text
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/predict-universe', methods=['POST'])
+def predict_universe():
+    """
+    Predict universe based on character text (quote, description, etc.)
+    
+    Body:
+        {
+            "text": "Character quote or description",
+            "top_k": 3  // optional, default 3
+        }
+    """
+    global nb_model
+    
+    if nb_model is None or not nb_model.is_trained:
+        return jsonify({
+            'success': False,
+            'error': 'Naive Bayes model not trained. Call /train-nb first.'
+        }), 400
+    
+    try:
+        data = request.get_json()
+        text = data.get('text')
+        top_k = data.get('top_k', 3)
+        
+        if not text:
+            return jsonify({
+                'success': False,
+                'error': 'Text is required'
+            }), 400
+        
+        # Predict universe
+        predictions = nb_model.predict_universe(text, top_k)
+        
+        return jsonify({
+            'success': True,
+            'predictions': predictions,
+            'input_text': text
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/classify-character', methods=['POST'])
+def classify_character():
+    """
+    Classify a character (predict both genre and universe)
+    
+    Body:
+        {
+            "quote": "Character quote",
+            "name": "Character name",
+            "source": "Source title",
+            "description": "Character description"
+        }
+    """
+    global nb_model
+    
+    if nb_model is None or not nb_model.is_trained:
+        return jsonify({
+            'success': False,
+            'error': 'Naive Bayes model not trained. Call /train-nb first.'
+        }), 400
+    
+    try:
+        character_data = request.get_json()
+        
+        if not character_data:
+            return jsonify({
+                'success': False,
+                'error': 'Character data is required'
+            }), 400
+        
+        # Classify character
+        classification = nb_model.classify_character(character_data)
+        
+        return jsonify({
+            'success': True,
+            'classification': classification
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/nb-info', methods=['GET'])
+def get_nb_info():
+    """
+    Get information about the Naive Bayes model
+    """
+    global nb_model
+    
+    if nb_model is None:
+        return jsonify({
+            'success': False,
+            'error': 'Naive Bayes model not loaded'
+        }), 400
+    
+    try:
+        info = nb_model.get_model_info()
+        
+        return jsonify({
+            'success': True,
+            'model_info': info
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
 if __name__ == '__main__':
     print("=" * 60)
     print("ML Character Prediction API Server")
@@ -421,6 +629,12 @@ if __name__ == '__main__':
     print("  POST /predict-difficulty- Predict character difficulty")
     print("  GET  /difficulty-rankings- Get difficulty rankings")
     print("  GET  /feature-importance - Get feature importance")
+    print("\n  Naive Bayes Endpoints:")
+    print("  POST /train-nb          - Train Naive Bayes classifier")
+    print("  POST /predict-genre     - Predict character genre")
+    print("  POST /predict-universe  - Predict character universe")
+    print("  POST /classify-character- Full classification (genre + universe)")
+    print("  GET  /nb-info           - Get Naive Bayes model info")
     print("=" * 60)
     
     # Auto-train on startup
@@ -437,6 +651,11 @@ if __name__ == '__main__':
         lr_model = CharacterDifficultyPredictor()
         lr_metrics = lr_model.train(characters)
         print(f"✓ Linear Regression model ready! (R²={lr_metrics['r2_score']:.4f})")
+        
+        # Train Naive Bayes
+        nb_model = CharacterNaiveBayes()
+        nb_metrics = nb_model.train(characters)
+        print(f"✓ Naive Bayes model ready! (Genre: {nb_metrics['genre_accuracy']:.2%}, Universe: {nb_metrics['universe_accuracy']:.2%})")
         print()
     except Exception as e:
         print(f"⚠ Could not auto-train models: {e}")

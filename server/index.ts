@@ -11,7 +11,11 @@ import {
   handleMLHealth,
   handleMLPredictDifficulty,
   handleMLDifficultyRankings,
-  handleMLFeatureImportance
+  handleMLFeatureImportance,
+  handleMLPredictGenre,
+  handleMLPredictUniverse,
+  handleMLClassifyCharacter,
+  handleMLNBInfo
 } from "./routes/ml";
 
 export function createServer() {
@@ -44,6 +48,12 @@ export function createServer() {
   app.post("/api/ml/predict-difficulty", handleMLPredictDifficulty);
   app.get("/api/ml/difficulty-rankings", handleMLDifficultyRankings);
   app.get("/api/ml/feature-importance", handleMLFeatureImportance);
+  
+  // ML API routes - Naive Bayes
+  app.post("/api/ml/predict-genre", handleMLPredictGenre);
+  app.post("/api/ml/predict-universe", handleMLPredictUniverse);
+  app.post("/api/ml/classify-character", handleMLClassifyCharacter);
+  app.get("/api/ml/nb-info", handleMLNBInfo);
 
   return app;
 }
