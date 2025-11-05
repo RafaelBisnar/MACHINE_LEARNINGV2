@@ -1,0 +1,26 @@
+services:
+  # Python Flask ML Service (Deploy this first!)
+  - type: web
+    name: charactle-ml-service
+    env: python
+    buildCommand: cd ml-service && pip install -r requirements.txt
+    startCommand: cd ml-service && gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --timeout 600
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+    # Free tier note: Model training may take time on first run
+    
+  # Main Node.js Application
+  - type: web
+    name: charactle-app
+    env: node
+    buildCommand: pnpm install && pnpm build
+    startCommand: pnpm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ML_SERVICE_URL
+        # Set this to your ML service URL after deploying it
+        # Example: https://charactle-ml-service.onrender.com
+        value: https://charactle-ml-service.onrender.com
+    healthCheckPath: /api/ping

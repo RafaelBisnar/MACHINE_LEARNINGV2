@@ -1,5 +1,8 @@
 import { RequestHandler } from "express";
 
+// Get ML Service URL from environment or default to localhost
+const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://localhost:5000';
+
 /**
  * POST /api/ml/predict
  * Get ML-powered character predictions based on clues
@@ -18,7 +21,7 @@ export const handleMLPredict: RequestHandler = async (req, res) => {
     const { quote = "", source = "", universe = "", genre = "", top_k = 5 } = req.body;
     
     // Call Python ML service
-    const mlResponse = await fetch('http://localhost:5000/predict', {
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/predict`,  {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ quote, source, universe, genre, top_k })
@@ -55,7 +58,7 @@ export const handleMLAnalyzeGame: RequestHandler = async (req, res) => {
     const { clues, incorrectGuesses = 0 } = req.body;
     
     // Call Python ML service
-    const mlResponse = await fetch('http://localhost:5000/analyze-clues', {
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/analyze-clues`,  {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ clues, incorrectGuesses })
@@ -83,7 +86,7 @@ export const handleMLAnalyzeGame: RequestHandler = async (req, res) => {
  */
 export const handleMLHealth: RequestHandler = async (_req, res) => {
   try {
-    const mlResponse = await fetch('http://localhost:5000/health');
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/health`);
     const data = await mlResponse.json();
     res.json(data);
   } catch (error) {
@@ -115,7 +118,7 @@ export const handleMLPredictDifficulty: RequestHandler = async (req, res) => {
     }
     
     // Call Python ML service
-    const mlResponse = await fetch('http://localhost:5000/predict-difficulty', {
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/predict-difficulty`,  {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ character })
@@ -143,7 +146,7 @@ export const handleMLPredictDifficulty: RequestHandler = async (req, res) => {
  */
 export const handleMLDifficultyRankings: RequestHandler = async (_req, res) => {
   try {
-    const mlResponse = await fetch('http://localhost:5000/difficulty-rankings');
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/difficulty-rankings`);
     
     if (!mlResponse.ok) {
       throw new Error(`ML service returned ${mlResponse.status}`);
@@ -167,7 +170,7 @@ export const handleMLDifficultyRankings: RequestHandler = async (_req, res) => {
  */
 export const handleMLFeatureImportance: RequestHandler = async (_req, res) => {
   try {
-    const mlResponse = await fetch('http://localhost:5000/feature-importance');
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/feature-importance`);
     
     if (!mlResponse.ok) {
       throw new Error(`ML service returned ${mlResponse.status}`);
@@ -191,7 +194,7 @@ export const handleMLPredictGenre: RequestHandler = async (req, res) => {
   try {
     const { text, top_k } = req.body;
     
-    const mlResponse = await fetch('http://localhost:5000/predict-genre', {
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/predict-genre`,  {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text, top_k })
@@ -217,7 +220,7 @@ export const handleMLPredictUniverse: RequestHandler = async (req, res) => {
   try {
     const { text, top_k } = req.body;
     
-    const mlResponse = await fetch('http://localhost:5000/predict-universe', {
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/predict-universe`,  {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text, top_k })
@@ -243,7 +246,7 @@ export const handleMLClassifyCharacter: RequestHandler = async (req, res) => {
   try {
     const characterData = req.body;
     
-    const mlResponse = await fetch('http://localhost:5000/classify-character', {
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/classify-character`,  {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(characterData)
@@ -267,7 +270,7 @@ export const handleMLClassifyCharacter: RequestHandler = async (req, res) => {
 
 export const handleMLNBInfo: RequestHandler = async (_req, res) => {
   try {
-    const mlResponse = await fetch('http://localhost:5000/nb-info');
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/nb-info`);
     
     if (!mlResponse.ok) {
       throw new Error(`ML service returned ${mlResponse.status}`);
@@ -301,7 +304,7 @@ export const handleMLTrainSVM: RequestHandler = async (req, res) => {
   try {
     const { kernel, optimize } = req.body;
     
-    const mlResponse = await fetch('http://localhost:5000/train-svm', {
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/train-svm`,  {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ kernel, optimize })
@@ -344,7 +347,7 @@ export const handleMLPredictSVM: RequestHandler = async (req, res) => {
       });
     }
     
-    const mlResponse = await fetch('http://localhost:5000/predict-svm', {
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/predict-svm`,  {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text, top_k })
@@ -377,7 +380,7 @@ export const handleMLSVMFeatureImportance: RequestHandler = async (req, res) => 
   try {
     const top_n = req.query.top_n || 20;
     
-    const mlResponse = await fetch(`http://localhost:5000/svm-feature-importance?top_n=${top_n}`);
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/svm-feature-importance?top_n=${top_n}`);
     
     if (!mlResponse.ok) {
       throw new Error(`ML service returned ${mlResponse.status}`);
@@ -401,7 +404,7 @@ export const handleMLSVMFeatureImportance: RequestHandler = async (req, res) => 
  */
 export const handleMLSVMInfo: RequestHandler = async (_req, res) => {
   try {
-    const mlResponse = await fetch('http://localhost:5000/svm-info');
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/svm-info`);
     
     if (!mlResponse.ok) {
       throw new Error(`ML service returned ${mlResponse.status}`);
@@ -436,7 +439,7 @@ export const handleMLTrainDT: RequestHandler = async (req, res) => {
   try {
     const { max_depth, min_samples_split, min_samples_leaf } = req.body;
     
-    const mlResponse = await fetch('http://localhost:5000/train-dt', {
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/train-dt`,  {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ max_depth, min_samples_split, min_samples_leaf })
@@ -479,7 +482,7 @@ export const handleMLPredictDT: RequestHandler = async (req, res) => {
       });
     }
     
-    const mlResponse = await fetch('http://localhost:5000/predict-dt', {
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/predict-dt`,  {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ character, top_k })
@@ -521,7 +524,7 @@ export const handleMLPredictDifficultyDT: RequestHandler = async (req, res) => {
       });
     }
     
-    const mlResponse = await fetch('http://localhost:5000/predict-difficulty-dt', {
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/predict-difficulty-dt`,  {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ character })
@@ -554,7 +557,7 @@ export const handleMLDTFeatureImportance: RequestHandler = async (req, res) => {
   try {
     const top_n = req.query.top_n || 20;
     
-    const mlResponse = await fetch(`http://localhost:5000/dt-feature-importance?top_n=${top_n}`);
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/dt-feature-importance?top_n=${top_n}`);
     
     if (!mlResponse.ok) {
       throw new Error(`ML service returned ${mlResponse.status}`);
@@ -583,7 +586,7 @@ export const handleMLDTRules: RequestHandler = async (req, res) => {
   try {
     const max_depth = req.query.max_depth || 3;
     
-    const mlResponse = await fetch(`http://localhost:5000/dt-rules?max_depth=${max_depth}`);
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/dt-rules?max_depth=${max_depth}`);
     
     if (!mlResponse.ok) {
       throw new Error(`ML service returned ${mlResponse.status}`);
@@ -614,7 +617,7 @@ export const handleMLDTVisualize: RequestHandler = async (req, res) => {
     const tree_type = req.query.tree_type || 'classifier';
     const max_depth = req.query.max_depth || 3;
     
-    const mlResponse = await fetch(`http://localhost:5000/dt-visualize?tree_type=${tree_type}&max_depth=${max_depth}`);
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/dt-visualize?tree_type=${tree_type}&max_depth=${max_depth}`);
     
     if (!mlResponse.ok) {
       throw new Error(`ML service returned ${mlResponse.status}`);
@@ -638,7 +641,7 @@ export const handleMLDTVisualize: RequestHandler = async (req, res) => {
  */
 export const handleMLDTInfo: RequestHandler = async (_req, res) => {
   try {
-    const mlResponse = await fetch('http://localhost:5000/dt-info');
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/dt-info`);
     
     if (!mlResponse.ok) {
       throw new Error(`ML service returned ${mlResponse.status}`);
@@ -673,7 +676,7 @@ export const handleMLTrainANN: RequestHandler = async (req, res) => {
   try {
     const { hidden_layers, max_iter, learning_rate } = req.body;
     
-    const mlResponse = await fetch('http://localhost:5000/train-ann', {
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/train-ann`,  {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ hidden_layers, max_iter, learning_rate })
@@ -716,7 +719,7 @@ export const handleMLPredictANN: RequestHandler = async (req, res) => {
       });
     }
     
-    const mlResponse = await fetch('http://localhost:5000/predict-ann', {
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/predict-ann`,  {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ character, top_k })
@@ -758,7 +761,7 @@ export const handleMLPredictDifficultyANN: RequestHandler = async (req, res) => 
       });
     }
     
-    const mlResponse = await fetch('http://localhost:5000/predict-difficulty-ann', {
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/predict-difficulty-ann`,  {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ character })
@@ -786,7 +789,7 @@ export const handleMLPredictDifficultyANN: RequestHandler = async (req, res) => 
  */
 export const handleMLANNInfo: RequestHandler = async (_req, res) => {
   try {
-    const mlResponse = await fetch('http://localhost:5000/ann-info');
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/ann-info`);
     
     if (!mlResponse.ok) {
       throw new Error(`ML service returned ${mlResponse.status}`);
@@ -851,22 +854,22 @@ export const handleMLGetHints: RequestHandler = async (req, res) => {
 
     // Call all 4 character prediction algorithms in parallel
     const [knnRes, svmRes, dtRes, annRes] = await Promise.allSettled([
-      fetch('http://localhost:5000/predict-knn', {
+      fetch(`${ML_SERVICE_URL}/predict-knn`,  {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ character: enhancedCharacter, top_k: 5 })
       }),
-      fetch('http://localhost:5000/predict-svm', {
+      fetch(`${ML_SERVICE_URL}/predict-svm`,  {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ character: enhancedCharacter, top_k: 5 })
       }),
-      fetch('http://localhost:5000/predict-decision-tree', {
+      fetch(`${ML_SERVICE_URL}/predict-decision-tree`,  {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ character: enhancedCharacter, top_k: 5 })
       }),
-      fetch('http://localhost:5000/predict-ann', {
+      fetch(`${ML_SERVICE_URL}/predict-ann`,  {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ character: enhancedCharacter, top_k: 5 })
@@ -1016,7 +1019,7 @@ export const handleFindSimilarCharacters: RequestHandler = async (req, res) => {
     }
 
     // Call Python ML service K-NN endpoint for similarity
-    const mlResponse = await fetch('http://localhost:5000/find-similar', {
+    const mlResponse = await fetch(`${ML_SERVICE_URL}/find-similar`,  {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
