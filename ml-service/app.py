@@ -4,6 +4,7 @@ Flask API server for Machine Learning Models:
 - Linear Regression Difficulty Analysis
 - Naive Bayes Genre/Universe Classification
 - SVM Character Classification
+- Decision Tree Classification & Regression
 
 Provides REST API endpoints that the Express server can call
 to get ML-powered character predictions and analysis.
@@ -15,6 +16,7 @@ from knn_model import CharacterKNN
 from linear_regression_model import CharacterDifficultyPredictor
 from naive_bayes_model import CharacterNaiveBayes
 from svm_model import CharacterSVM
+from decision_tree_model import CharacterDecisionTree
 import json
 import os
 
@@ -26,6 +28,7 @@ knn_model = None
 lr_model = None
 nb_model = None
 svm_model = None
+dt_model = None
 
 
 def load_characters_from_typescript():
@@ -107,9 +110,14 @@ def health_check():
             'svm': {
                 'loaded': svm_model is not None,
                 'trained': svm_model is not None and svm_model.is_trained
+            },
+            'decision_tree': {
+                'loaded': dt_model is not None,
+                'trained_classifier': dt_model is not None and dt_model.is_trained_classifier,
+                'trained_regressor': dt_model is not None and dt_model.is_trained_regressor
             }
         },
-        'service': 'ML Character Analysis (K-NN + LR + Naive Bayes + SVM)'
+        'service': 'ML Character Analysis (K-NN + LR + Naive Bayes + SVM + Decision Tree)'
     })
 
 
@@ -759,6 +767,293 @@ def get_svm_info():
         }), 500
 
 
+# ===== DECISION TREE ENDPOINTS =====
+
+@app.route('/train-dt', methods=['POST'])
+def train_decision_tree():
+    """
+    Train the Decision Tree classifier and regressor
+    
+    Body (optional):
+        {
+            "characters": [...],     // Optional: custom training data
+            "max_depth": 10,         // Optional: max tree depth
+            "min_samples_split": 2,  // Optional: min samples to split
+            "min_samples_leaf": 1    // Optional: min samples at leaf
+        }
+    """
+    global dt_model
+    
+    try:
+        data = request.get_json() or {}
+        characters = data.get('characters') or load_characters_from_typescript()
+        max_depth = data.get('max_depth', 10)
+        min_samples_split = data.get('min_samples_split', 2)
+        min_samples_leaf = data.get('min_samples_leaf', 1)
+        
+        # Create and train model
+        dt_model = CharacterDecisionTree(
+            max_depth=max_depth,
+            min_samples_split=min_samples_split,
+            min_samples_leaf=min_samples_leaf
+        )
+        metrics = dt_model.train(characters)
+        
+        # Save model
+        dt_model.save_model('decision_tree_model.pkl')
+        
+        return jsonify({
+            'success': True,
+            'message': 'Decision Tree models trained successfully',
+            'metrics': metrics
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/predict-dt', methods=['POST'])
+def predict_dt_character():
+    """
+    Predict character using Decision Tree classifier
+    
+    Body:
+        {
+            "character": {
+                "name": "Spider-Man",
+                "quote": "With great power...",
+                "universe": "Marvel",
+                "genre": "Superhero Action",
+                "powers": ["web-slinging", "spider-sense"],
+                "description": "A hero with spider abilities"
+            },
+            "top_k": 5  // optional, default 5
+        }
+    """
+    global dt_model
+    
+    if dt_model is None or not dt_model.is_trained_classifier:
+        return jsonify({
+            'success': False,
+            'error': 'Decision Tree classifier not trained. Call /train-dt first.'
+        }), 400
+    
+    try:
+        data = request.get_json()
+        character = data.get('character')
+        top_k = data.get('top_k', 5)
+        
+        if not character:
+            return jsonify({
+                'success': False,
+                'error': 'Character data is required'
+            }), 400
+        
+        # Predict
+        predictions = dt_model.predict_character(character, top_k)
+        
+        return jsonify({
+            'success': True,
+            'predictions': predictions
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/predict-difficulty-dt', methods=['POST'])
+def predict_difficulty_dt():
+    """
+    Predict difficulty using Decision Tree regressor
+    
+    Body:
+        {
+            "character": {
+                "name": "Spider-Man",
+                "quote": "With great power...",
+                "universe": "Marvel",
+                "genre": "Superhero Action",
+                "powers": ["web-slinging", "spider-sense"],
+                "description": "A hero with spider abilities"
+            }
+        }
+    """
+    global dt_model
+    
+    if dt_model is None or not dt_model.is_trained_regressor:
+        return jsonify({
+            'success': False,
+            'error': 'Decision Tree regressor not trained. Call /train-dt first.'
+        }), 400
+    
+    try:
+        data = request.get_json()
+        character = data.get('character')
+        
+        if not character:
+            return jsonify({
+                'success': False,
+                'error': 'Character data is required'
+            }), 400
+        
+        # Predict difficulty
+        difficulty = dt_model.predict_difficulty(character)
+        
+        return jsonify({
+            'success': True,
+            'difficulty': difficulty,
+            'character_name': character.get('name', 'Unknown')
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/dt-feature-importance', methods=['GET'])
+def dt_feature_importance():
+    """
+    Get feature importance from Decision Tree classifier
+    
+    Query params:
+        top_n: number of top features (default 20)
+    """
+    global dt_model
+    
+    if dt_model is None or not dt_model.is_trained_classifier:
+        return jsonify({
+            'success': False,
+            'error': 'Decision Tree classifier not trained. Call /train-dt first.'
+        }), 400
+    
+    try:
+        top_n = request.args.get('top_n', 20, type=int)
+        features = dt_model.get_feature_importance(top_n)
+        
+        return jsonify({
+            'success': True,
+            'features': features
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/dt-rules', methods=['GET'])
+def dt_rules():
+    """
+    Get human-readable decision rules from Decision Tree
+    
+    Query params:
+        max_depth: maximum depth to export (default 3)
+    """
+    global dt_model
+    
+    if dt_model is None or not dt_model.is_trained_classifier:
+        return jsonify({
+            'success': False,
+            'error': 'Decision Tree classifier not trained. Call /train-dt first.'
+        }), 400
+    
+    try:
+        max_depth = request.args.get('max_depth', 3, type=int)
+        rules = dt_model.get_decision_rules(max_depth)
+        
+        return jsonify({
+            'success': True,
+            'rules': rules
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/dt-visualize', methods=['GET'])
+def dt_visualize():
+    """
+    Get tree visualization as base64-encoded PNG
+    
+    Query params:
+        tree_type: 'classifier' or 'regressor' (default 'classifier')
+        max_depth: maximum depth to visualize (default 3)
+    """
+    global dt_model
+    
+    tree_type = request.args.get('tree_type', 'classifier')
+    
+    if tree_type == 'classifier':
+        if dt_model is None or not dt_model.is_trained_classifier:
+            return jsonify({
+                'success': False,
+                'error': 'Decision Tree classifier not trained. Call /train-dt first.'
+            }), 400
+    else:
+        if dt_model is None or not dt_model.is_trained_regressor:
+            return jsonify({
+                'success': False,
+                'error': 'Decision Tree regressor not trained. Call /train-dt first.'
+            }), 400
+    
+    try:
+        max_depth = request.args.get('max_depth', 3, type=int)
+        image_base64 = dt_model.visualize_tree(tree_type, max_depth)
+        
+        return jsonify({
+            'success': True,
+            'image': image_base64,
+            'format': 'png',
+            'encoding': 'base64'
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
+@app.route('/dt-info', methods=['GET'])
+def get_dt_info():
+    """
+    Get information about the Decision Tree models
+    """
+    global dt_model
+    
+    if dt_model is None:
+        return jsonify({
+            'success': False,
+            'error': 'Decision Tree model not loaded'
+        }), 400
+    
+    try:
+        info = dt_model.get_model_info()
+        
+        return jsonify({
+            'success': True,
+            'model_info': info
+        })
+    
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
 if __name__ == '__main__':
     print("=" * 60)
     print("ML Character Prediction API Server")
@@ -786,6 +1081,14 @@ if __name__ == '__main__':
     print("  POST /predict-svm       - Predict character using SVM")
     print("  GET  /svm-feature-importance - Get feature importance (linear kernel)")
     print("  GET  /svm-info          - Get SVM model info")
+    print("\nDecision Tree Endpoints:")
+    print("  POST /train-dt          - Train Decision Tree classifier & regressor")
+    print("  POST /predict-dt        - Predict character using Decision Tree")
+    print("  POST /predict-difficulty-dt - Predict difficulty using Decision Tree")
+    print("  GET  /dt-feature-importance - Get feature importance")
+    print("  GET  /dt-rules          - Get human-readable decision rules")
+    print("  GET  /dt-visualize      - Get tree visualization (PNG)")
+    print("  GET  /dt-info           - Get Decision Tree model info")
     print("=" * 60)
     
     # Auto-train on startup
@@ -813,6 +1116,12 @@ if __name__ == '__main__':
         svm_metrics = svm_model.train(characters, optimize=False)
         svm_model.save_model('svm_model.pkl')
         print(f"✓ SVM model ready! (Accuracy: {svm_metrics['test_accuracy']:.2%}, Support Vectors: {svm_metrics['n_support_vectors']}, Kernel: {svm_metrics['kernel']})")
+        
+        # Train Decision Tree
+        dt_model = CharacterDecisionTree(max_depth=10)
+        dt_metrics = dt_model.train(characters)
+        dt_model.save_model('decision_tree_model.pkl')
+        print(f"✓ Decision Tree model ready! (Classifier: {dt_metrics['classifier']['test_accuracy']:.2%}, Regressor R²: {dt_metrics['regressor']['test_r2']:.4f})")
         print()
     except Exception as e:
         print(f"⚠ Could not auto-train models: {e}")

@@ -418,3 +418,240 @@ export const handleMLSVMInfo: RequestHandler = async (_req, res) => {
     });
   }
 };
+
+// ===== DECISION TREE ENDPOINTS =====
+
+/**
+ * POST /api/ml/train-dt
+ * Train the Decision Tree classifier and regressor
+ * 
+ * Body:
+ *   {
+ *     "max_depth": 10,         // optional
+ *     "min_samples_split": 2,  // optional
+ *     "min_samples_leaf": 1    // optional
+ *   }
+ */
+export const handleMLTrainDT: RequestHandler = async (req, res) => {
+  try {
+    const { max_depth, min_samples_split, min_samples_leaf } = req.body;
+    
+    const mlResponse = await fetch('http://localhost:5000/train-dt', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ max_depth, min_samples_split, min_samples_leaf })
+    });
+    
+    if (!mlResponse.ok) {
+      throw new Error(`ML service returned ${mlResponse.status}`);
+    }
+    
+    const data = await mlResponse.json();
+    res.json(data);
+    
+  } catch (error) {
+    console.error("ML Decision Tree training error:", error);
+    res.status(503).json({ 
+      success: false,
+      error: 'ML service unavailable' 
+    });
+  }
+};
+
+/**
+ * POST /api/ml/predict-dt
+ * Predict character using Decision Tree
+ * 
+ * Body:
+ *   {
+ *     "character": { name, quote, universe, genre, powers, description },
+ *     "top_k": 5  // optional
+ *   }
+ */
+export const handleMLPredictDT: RequestHandler = async (req, res) => {
+  try {
+    const { character, top_k } = req.body;
+    
+    if (!character) {
+      return res.status(400).json({
+        success: false,
+        error: 'Character data is required'
+      });
+    }
+    
+    const mlResponse = await fetch('http://localhost:5000/predict-dt', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ character, top_k })
+    });
+    
+    if (!mlResponse.ok) {
+      throw new Error(`ML service returned ${mlResponse.status}`);
+    }
+    
+    const data = await mlResponse.json();
+    res.json(data);
+    
+  } catch (error) {
+    console.error("ML Decision Tree prediction error:", error);
+    res.status(503).json({ 
+      success: false,
+      error: 'ML service unavailable' 
+    });
+  }
+};
+
+/**
+ * POST /api/ml/predict-difficulty-dt
+ * Predict difficulty using Decision Tree regressor
+ * 
+ * Body:
+ *   {
+ *     "character": { name, quote, universe, genre, powers, description }
+ *   }
+ */
+export const handleMLPredictDifficultyDT: RequestHandler = async (req, res) => {
+  try {
+    const { character } = req.body;
+    
+    if (!character) {
+      return res.status(400).json({
+        success: false,
+        error: 'Character data is required'
+      });
+    }
+    
+    const mlResponse = await fetch('http://localhost:5000/predict-difficulty-dt', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ character })
+    });
+    
+    if (!mlResponse.ok) {
+      throw new Error(`ML service returned ${mlResponse.status}`);
+    }
+    
+    const data = await mlResponse.json();
+    res.json(data);
+    
+  } catch (error) {
+    console.error("ML Decision Tree difficulty prediction error:", error);
+    res.status(503).json({ 
+      success: false,
+      error: 'ML service unavailable' 
+    });
+  }
+};
+
+/**
+ * GET /api/ml/dt-feature-importance
+ * Get feature importance from Decision Tree classifier
+ * 
+ * Query params:
+ *   top_n: number of top features (default 20)
+ */
+export const handleMLDTFeatureImportance: RequestHandler = async (req, res) => {
+  try {
+    const top_n = req.query.top_n || 20;
+    
+    const mlResponse = await fetch(`http://localhost:5000/dt-feature-importance?top_n=${top_n}`);
+    
+    if (!mlResponse.ok) {
+      throw new Error(`ML service returned ${mlResponse.status}`);
+    }
+    
+    const data = await mlResponse.json();
+    res.json(data);
+    
+  } catch (error) {
+    console.error("ML Decision Tree feature importance error:", error);
+    res.status(503).json({ 
+      success: false,
+      error: 'ML service unavailable' 
+    });
+  }
+};
+
+/**
+ * GET /api/ml/dt-rules
+ * Get human-readable decision rules
+ * 
+ * Query params:
+ *   max_depth: maximum depth to export (default 3)
+ */
+export const handleMLDTRules: RequestHandler = async (req, res) => {
+  try {
+    const max_depth = req.query.max_depth || 3;
+    
+    const mlResponse = await fetch(`http://localhost:5000/dt-rules?max_depth=${max_depth}`);
+    
+    if (!mlResponse.ok) {
+      throw new Error(`ML service returned ${mlResponse.status}`);
+    }
+    
+    const data = await mlResponse.json();
+    res.json(data);
+    
+  } catch (error) {
+    console.error("ML Decision Tree rules error:", error);
+    res.status(503).json({ 
+      success: false,
+      error: 'ML service unavailable' 
+    });
+  }
+};
+
+/**
+ * GET /api/ml/dt-visualize
+ * Get tree visualization as base64-encoded PNG
+ * 
+ * Query params:
+ *   tree_type: 'classifier' or 'regressor' (default 'classifier')
+ *   max_depth: maximum depth to visualize (default 3)
+ */
+export const handleMLDTVisualize: RequestHandler = async (req, res) => {
+  try {
+    const tree_type = req.query.tree_type || 'classifier';
+    const max_depth = req.query.max_depth || 3;
+    
+    const mlResponse = await fetch(`http://localhost:5000/dt-visualize?tree_type=${tree_type}&max_depth=${max_depth}`);
+    
+    if (!mlResponse.ok) {
+      throw new Error(`ML service returned ${mlResponse.status}`);
+    }
+    
+    const data = await mlResponse.json();
+    res.json(data);
+    
+  } catch (error) {
+    console.error("ML Decision Tree visualization error:", error);
+    res.status(503).json({ 
+      success: false,
+      error: 'ML service unavailable' 
+    });
+  }
+};
+
+/**
+ * GET /api/ml/dt-info
+ * Get information about the Decision Tree models
+ */
+export const handleMLDTInfo: RequestHandler = async (_req, res) => {
+  try {
+    const mlResponse = await fetch('http://localhost:5000/dt-info');
+    
+    if (!mlResponse.ok) {
+      throw new Error(`ML service returned ${mlResponse.status}`);
+    }
+    
+    const data = await mlResponse.json();
+    res.json(data);
+    
+  } catch (error) {
+    console.error("ML Decision Tree info error:", error);
+    res.status(503).json({ 
+      success: false,
+      error: 'ML service unavailable' 
+    });
+  }
+};

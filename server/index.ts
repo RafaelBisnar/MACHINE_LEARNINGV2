@@ -19,7 +19,14 @@ import {
   handleMLTrainSVM,
   handleMLPredictSVM,
   handleMLSVMFeatureImportance,
-  handleMLSVMInfo
+  handleMLSVMInfo,
+  handleMLTrainDT,
+  handleMLPredictDT,
+  handleMLPredictDifficultyDT,
+  handleMLDTFeatureImportance,
+  handleMLDTRules,
+  handleMLDTVisualize,
+  handleMLDTInfo
 } from "./routes/ml";
 
 export function createServer() {
@@ -64,6 +71,15 @@ export function createServer() {
   app.post("/api/ml/predict-svm", handleMLPredictSVM);
   app.get("/api/ml/svm-feature-importance", handleMLSVMFeatureImportance);
   app.get("/api/ml/svm-info", handleMLSVMInfo);
+  
+  // ML API routes - Decision Tree
+  app.post("/api/ml/train-dt", handleMLTrainDT);
+  app.post("/api/ml/predict-dt", handleMLPredictDT);
+  app.post("/api/ml/predict-difficulty-dt", handleMLPredictDifficultyDT);
+  app.get("/api/ml/dt-feature-importance", handleMLDTFeatureImportance);
+  app.get("/api/ml/dt-rules", handleMLDTRules);
+  app.get("/api/ml/dt-visualize", handleMLDTVisualize);
+  app.get("/api/ml/dt-info", handleMLDTInfo);
 
   return app;
 }

@@ -7,4 +7,6 @@ pillow
 requests
 torch
 torchvision
+matplotlib
+colorama
 
