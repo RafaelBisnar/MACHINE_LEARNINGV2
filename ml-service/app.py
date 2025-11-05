@@ -34,6 +34,24 @@ dt_model = None
 ann_model = None
 
 
+@app.route('/', methods=['GET'])
+def index():
+    """Root endpoint - API information"""
+    return jsonify({
+        'service': 'Machine Learning Character Prediction API',
+        'status': 'running',
+        'endpoints': {
+            'health': '/health',
+            'knn': '/predict, /analyze-clues',
+            'linear_regression': '/predict-difficulty, /difficulty-rankings, /feature-importance',
+            'naive_bayes': '/predict-genre, /predict-universe, /classify-character, /nb-info',
+            'svm': '/train-svm, /predict-svm, /svm-feature-importance, /svm-info',
+            'decision_tree': '/train-dt, /predict-dt, /predict-difficulty-dt, /dt-feature-importance, /dt-rules, /dt-visualize, /dt-info',
+            'ann': '/train-ann, /predict-ann, /predict-difficulty-ann, /ann-info'
+        }
+    })
+
+
 def load_characters_from_typescript():
     """
     Load character data from the TypeScript characters file
