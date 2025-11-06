@@ -40,6 +40,7 @@ def index():
     return jsonify({
         'service': 'Machine Learning Character Prediction API',
         'status': 'running',
+        'version': '1.0.0',
         'endpoints': {
             'health': '/health',
             'knn': '/predict, /analyze-clues',
@@ -50,6 +51,12 @@ def index():
             'ann': '/train-ann, /predict-ann, /predict-difficulty-ann, /ann-info'
         }
     })
+
+
+# Add startup logging for debugging
+print("=" * 60, flush=True)
+print("🚀 ML Service Starting...", flush=True)
+print("=" * 60, flush=True)
 
 
 def load_characters_from_typescript():
