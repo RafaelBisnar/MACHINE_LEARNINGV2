@@ -5,6 +5,7 @@ import { handleDemo } from "./routes/demo";
 import { handleGetTodayGame, handleRevealAnswer } from "./routes/game";
 import { handleGuess } from "./routes/guess";
 import { handleGetCharacters } from "./routes/characters";
+import { awardCard, getCardCollection, getAchievements } from "./routes/rewards";
 import { 
   handleMLPredict, 
   handleMLAnalyzeGame, 
@@ -99,6 +100,11 @@ export function createServer() {
   
   // ML API routes - Character Similarity
   app.post("/api/ml/find-similar-characters", handleFindSimilarCharacters);
+
+  // Reward System API routes
+  app.post("/api/rewards/award-card", awardCard);
+  app.get("/api/rewards/collection", getCardCollection);
+  app.get("/api/rewards/achievements", getAchievements);
 
   return app;
 }

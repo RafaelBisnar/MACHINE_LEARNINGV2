@@ -1,20 +1,29 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import ParticlesBackground from "@/components/ParticlesBackground";
 import GameHeader from "@/components/GameHeader";
 import CluePanel from "@/components/CluePanel";
 import AutocompleteInput from "@/components/AutocompleteInput";
 import MLHintSystem from "@/components/MLHintSystem";
 import CharacterSimilarityExplorer from "@/components/CharacterSimilarityExplorer";
-import { TodayGameResponse, GuessResponse } from "@shared/api";
+import { CardRewardModal } from "@/components/CardRewardModal";
+import { TodayGameResponse, GuessResponse, CardReward, AwardCardRequest } from "@shared/api";
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { Library } from "lucide-react";
 
 export default function Index() {
+  const navigate = useNavigate();
   const [gameState, setGameState] = useState<TodayGameResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hintCharacter, setHintCharacter] = useState<string>("");
   const [correctAnswer, setCorrectAnswer] = useState<string | null>(null);
   const [revealedCharacterId, setRevealedCharacterId] = useState<string | null>(null);
+  const [cardReward, setCardReward] = useState<CardReward | null>(null);
+  const [showRewardModal, setShowRewardModal] = useState(false);
+  const [guessStartTime, setGuessStartTime] = useState<number>(Date.now());
+  const [cluesUnlocked, setCluesUnlocked] = useState<number>(0);
   const { toast } = useToast();
   const inputRef = useRef<any>(null);
 
@@ -58,7 +67,54 @@ export default function Index() {
 
   useEffect(() => {
     fetchGameState();
+    // Track game start time
+    setGuessStartTime(Date.now());
   }, []);
+
+  // Track clue unlocks
+  useEffect(() => {
+    if (!gameState) return;
+    let count = 0;
+    if (gameState.clues.visual) count++;
+    if (gameState.clues.quote) count++;
+    if (gameState.clues.source) count++;
+    setCluesUnlocked(count);
+  }, [gameState]);
+
+  // Award card after winning
+  const awardCardReward = async (characterId: string, wrongAttempts: number) => {
+    try {
+      const guessTime = Math.floor((Date.now() - guessStartTime) / 1000);
+      
+      const requestData: AwardCardRequest = {
+        characterId,
+        guessTime,
+        cluesUsed: cluesUnlocked,
+        wrongAttempts,
+        isWon: true,
+      };
+
+      const response = await fetch("/api/rewards/award-card", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to award card");
+      }
+
+      const data = await response.json();
+      if (data.success && data.reward) {
+        setCardReward(data.reward);
+        setShowRewardModal(true);
+      }
+    } catch (error) {
+      console.error("Error awarding card:", error);
+    }
+  };
 
   // Start a new game with a random character
   const handleNewGame = () => {
@@ -156,6 +212,12 @@ export default function Index() {
       
       // Show feedback
       if (data.isCorrect) {
+        // Award card reward
+        if (data.revealedCharacter) {
+          const wrongAttempts = gameState.guesses.length;
+          await awardCardReward(data.revealedCharacter.id, wrongAttempts);
+        }
+        
         toast({
           title: "🎉 Correct!",
           description: `You guessed it! The character was ${data.revealedCharacter?.name}!`,
@@ -214,8 +276,26 @@ export default function Index() {
     <div className="min-h-screen bg-netflix-black text-white relative overflow-hidden">
       <ParticlesBackground />
 
+      {/* Card Reward Modal */}
+      <CardRewardModal
+        reward={cardReward}
+        open={showRewardModal}
+        onClose={() => setShowRewardModal(false)}
+      />
+
       <div className="content-wrapper min-h-screen flex flex-col">
         <GameHeader />
+
+        {/* Collection Button - Fixed position */}
+        <div className="fixed top-4 right-4 z-50">
+          <Button
+            onClick={() => navigate("/collection")}
+            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg"
+          >
+            <Library className="w-4 h-4 mr-2" />
+            Collection
+          </Button>
+        </div>
 
         <main className="flex-1 overflow-auto px-4 sm:px-8 py-8">
           <div className="max-w-6xl mx-auto">

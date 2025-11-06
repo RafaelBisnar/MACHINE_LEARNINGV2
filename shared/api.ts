@@ -119,3 +119,87 @@ export interface MLHintResponse {
   message: string;
   error?: string;
 }
+
+/**
+ * Character Card Reward System
+ */
+
+export type CardRarity = 'common' | 'rare' | 'epic' | 'legendary' | 'mythic';
+
+export interface CardRarityConfig {
+  rarity: CardRarity;
+  label: string;
+  color: string; // Tailwind color class
+  glowColor: string; // CSS color for glow effect
+  dropRate: number; // Percentage chance
+  icon: string; // Icon identifier
+}
+
+export interface CharacterCard {
+  id: string; // unique card instance ID
+  characterId: string;
+  characterName: string;
+  rarity: CardRarity;
+  serialNumber: number; // e.g., #001/500
+  maxSupply: number; // Total possible cards of this character+rarity
+  unlockedAt: string; // ISO timestamp
+  variant?: 'standard' | 'shiny' | 'holographic' | 'animated';
+  stats: {
+    popularity: number; // 1-100
+    difficulty: number; // 1-100
+    power: number; // 1-100
+  };
+  imageUrl: string;
+  characterImageUrl: string;
+}
+
+export interface CardCollection {
+  userId?: string; // For future user auth
+  cards: CharacterCard[];
+  totalCards: number;
+  uniqueCharacters: number;
+  rarityCount: Record<CardRarity, number>;
+  completionPercentage: number;
+}
+
+export interface Achievement {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  unlockedAt?: string; // ISO timestamp or undefined if locked
+  progress: number; // 0-100
+  maxProgress: number;
+  reward?: {
+    type: 'card' | 'coins' | 'badge';
+    value: string;
+  };
+}
+
+export interface CardReward {
+  card: CharacterCard;
+  isFirstTime: boolean; // First time unlocking this character
+  isDuplicate: boolean;
+  performance: {
+    guessTime: number; // seconds
+    cluesUsed: number;
+    wrongAttempts: number;
+    score: number; // Performance score 0-100
+  };
+  bonusMultiplier: number; // Rarity boost from performance
+  unlockedAchievements: Achievement[];
+}
+
+export interface AwardCardRequest {
+  characterId: string;
+  guessTime: number;
+  cluesUsed: number;
+  wrongAttempts: number;
+  isWon: boolean;
+}
+
+export interface AwardCardResponse {
+  success: boolean;
+  reward?: CardReward;
+  error?: string;
+}

@@ -308,3 +308,91 @@
     z-index: 10;
   }
 }
+
+/* Character Card Effects */
+@layer utilities {
+  /* Holographic effect */
+  .holographic-effect {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(255, 255, 255, 0) 50%,
+      rgba(255, 255, 255, 0.05) 100%
+    );
+    position: relative;
+  }
+
+  .holographic-shine {
+    background: linear-gradient(
+      115deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.3) 45%,
+      rgba(255, 255, 255, 0.5) 50%,
+      rgba(255, 255, 255, 0.3) 55%,
+      transparent 100%
+    );
+    animation: holographic-slide 3s infinite;
+  }
+
+  @keyframes holographic-slide {
+    0%, 100% {
+      transform: translateX(-200%) translateY(-200%) rotate(45deg);
+    }
+    50% {
+      transform: translateX(200%) translateY(200%) rotate(45deg);
+    }
+  }
+
+  /* Shiny effect */
+  .shiny-effect {
+    background: radial-gradient(
+      circle at 50% 50%,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+  }
+
+  .shiny-sparkle {
+    background: 
+      radial-gradient(
+        circle at 20% 20%,
+        rgba(255, 255, 255, 0.8) 0%,
+        transparent 5%
+      ),
+      radial-gradient(
+        circle at 80% 80%,
+        rgba(255, 255, 255, 0.6) 0%,
+        transparent 8%
+      );
+    animation: sparkle 2s infinite;
+  }
+
+  @keyframes sparkle {
+    0%, 100% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  /* Animated glow effect */
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 
+        0 0 20px rgba(255, 255, 255, 0.3),
+        0 0 40px rgba(255, 255, 255, 0.2),
+        0 0 60px rgba(255, 255, 255, 0.1);
+    }
+    50% {
+      box-shadow: 
+        0 0 40px rgba(255, 255, 255, 0.5),
+        0 0 80px rgba(255, 255, 255, 0.3),
+        0 0 120px rgba(255, 255, 255, 0.2);
+    }
+  }
+}
