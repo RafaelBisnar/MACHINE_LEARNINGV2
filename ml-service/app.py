@@ -1300,11 +1300,20 @@ def find_similar_characters():
     """
     global knn_model
     
+    # Auto-initialize K-NN model if not already initialized (lightweight, no training needed)
     if knn_model is None:
-        return jsonify({
-            'success': False,
-            'error': 'K-NN model not initialized. Train the model first.'
-        }), 500
+        print("⚠️  K-NN model not initialized, initializing now...")
+        try:
+            characters = load_characters_from_typescript()
+            knn_model = CharacterKNN(k=5)
+            knn_model.train(characters)
+            print("✓ K-NN model initialized successfully")
+        except Exception as e:
+            print(f"❌ Failed to initialize K-NN model: {e}")
+            return jsonify({
+                'success': False,
+                'error': f'Failed to initialize K-NN model: {str(e)}'
+            }), 500
     
     data = request.get_json()
     character_id = data.get('character_id')
