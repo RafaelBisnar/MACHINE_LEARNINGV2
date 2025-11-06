@@ -25,6 +25,10 @@ import os
 app = Flask(__name__)
 CORS(app)  # Enable CORS for Express server
 
+# Configure app for production
+app.config['PROPAGATE_EXCEPTIONS'] = True
+app.config['JSON_SORT_KEYS'] = False
+
 # Initialize global models
 knn_model = None
 lr_model = None
