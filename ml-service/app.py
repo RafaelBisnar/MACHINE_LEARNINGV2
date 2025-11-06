@@ -1440,47 +1440,16 @@ if __name__ == '__main__':
     print("  GET  /ann-info          - Get ANN model info")
     print("=" * 60)
     
-    # Auto-train on startup
-    try:
-        print("\nAuto-training models...")
-        characters = load_characters_from_typescript()
-        
-        # Train K-NN
-        knn_model = CharacterKNN(k=5)
-        knn_model.train(characters)
-        print("✓ K-NN model ready!")
-        
-        # Train Linear Regression
-        lr_model = CharacterDifficultyPredictor()
-        lr_metrics = lr_model.train(characters)
-        print(f"✓ Linear Regression model ready! (R²={lr_metrics['r2_score']:.4f})")
-        
-        # Train Naive Bayes
-        nb_model = CharacterNaiveBayes()
-        nb_metrics = nb_model.train(characters)
-        print(f"✓ Naive Bayes model ready! (Genre: {nb_metrics['genre_accuracy']:.2%}, Universe: {nb_metrics['universe_accuracy']:.2%})")
-        
-        # Train SVM
-        svm_model = CharacterSVM(kernel='rbf', use_calibration=True)
-        svm_metrics = svm_model.train(characters, optimize=False)
-        svm_model.save_model('svm_model.pkl')
-        print(f"✓ SVM model ready! (Accuracy: {svm_metrics['test_accuracy']:.2%}, Support Vectors: {svm_metrics['n_support_vectors']}, Kernel: {svm_metrics['kernel']})")
-        
-        # Train Decision Tree
-        dt_model = CharacterDecisionTree(max_depth=10)
-        dt_metrics = dt_model.train(characters)
-        dt_model.save_model('decision_tree_model.pkl')
-        print(f"✓ Decision Tree model ready! (Classifier: {dt_metrics['classifier']['test_accuracy']:.2%}, Regressor R²: {dt_metrics['regressor']['test_r2']:.4f})")
-        
-        # Train Artificial Neural Network
-        ann_model = CharacterANN(hidden_layers=(256, 128, 64), max_iter=300)
-        ann_metrics = ann_model.train(characters)
-        ann_model.save_model('ann_model.pkl')
-        print(f"✓ ANN model ready! (Classifier: {ann_metrics['classifier']['test_accuracy']:.2%}, Regressor R²: {ann_metrics['regressor']['test_r2']:.4f}, Iterations: {ann_metrics['classifier']['n_iterations']})")
-        print()
-    except Exception as e:
-        print(f"⚠ Could not auto-train models: {e}")
-        print("  You'll need to call /train manually\n")
+    # Auto-train on startup - DISABLED for free tier
+    # Models are too heavy and cause out-of-memory on free tier
+    # Train manually via API endpoints when needed
+    print("\n⚠️  Auto-training DISABLED")
+    print("📝 Train models manually via API endpoints:")
+    print("   POST /train-svm")
+    print("   POST /train-dt")
+    print("   POST /train-ann")
+    print("   (or use lightweight K-NN/LR which don't need training)")
+    print()
     
     # Start server
     port = int(os.environ.get('PORT', 5000))
